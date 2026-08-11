@@ -4,15 +4,11 @@ from dataclasses import dataclass, field
 from typing import Any
 
 
-@dataclass(slots=True)
-class Entry:
-    """يمثل مدخلاً معجميًا واحدًا."""
-
-    text: str
-
-    word_type: str | None = None
-
-    meaning: str | None = None
+@dataclass
+class Sense:
+    word_type: str
+    meaning: str
+    examples: list[str]
 
     root: str | None = None
 
