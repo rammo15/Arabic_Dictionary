@@ -3,7 +3,7 @@ from typing import List, Optional
 
 
 @dataclass(slots=True)
-class Word:
+class Entry:
     """
     يمثل كلمة عربية داخل القاموس.
     """
