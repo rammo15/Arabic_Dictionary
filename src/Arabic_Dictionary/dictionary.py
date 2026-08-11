@@ -25,3 +25,11 @@ class Dictionary:
     def exists(self, text):
 
         return self.lookup(text) is not None
+
+dictionary = Dictionary()
+
+dictionary.register_provider(SQLiteProvider())
+
+dictionary.register_provider(WiktionaryProvider())
+
+word = dictionary.lookup("كتاب")
