@@ -1,35 +1,34 @@
-from .models import Word
+from __future__ import annotations
+
+from .models import Entry
+from .providers import Provider
 
 
 class Dictionary:
 
     def __init__(self):
-        self._providers = []
 
-    def register_provider(self, provider):
+        self.providers: list[Provider] = []
 
-        self._providers.append(provider)
+    def add_provider(self, provider: Provider):
 
-    def lookup(self, text: str):
+        self.providers.append(provider)
 
-        for provider in self._providers:
+    def lookup(self, word: str) -> Entry | None:
 
-            result = provider.lookup(text)
+        for provider in self.providers:
 
-            if result:
+            result = provider.lookup(word)
 
+            if result is not None:
                 return result
 
         return None
 
-    def exists(self, text):
+    def exists(self, word: str) -> bool:
 
-        return self.lookup(text) is not None
+        return self.lookup(word) is not None
 
-dictionary = Dictionary()
+    def provider_names(self):
 
-dictionary.register_provider(SQLiteProvider())
-
-dictionary.register_provider(WiktionaryProvider())
-
-word = dictionary.lookup("كتاب")
+        return [p.name for p in self.providers]
