@@ -4,11 +4,32 @@ from dataclasses import dataclass, field
 from typing import Any
 
 
-@dataclass
+@dataclass(slots=True)
 class Sense:
-    word_type: str
+    """
+    معنى واحد للكلمة.
+    """
+
     meaning: str
-    examples: list[str]
+
+    word_type: str | None = None
+
+    examples: list[str] = field(default_factory=list)
+
+    synonyms: list[str] = field(default_factory=list)
+
+    antonyms: list[str] = field(default_factory=list)
+
+    notes: str | None = None
+
+
+@dataclass(slots=True)
+class Entry:
+    """
+    مدخل معجمي.
+    """
+
+    text: str
 
     root: str | None = None
 
@@ -20,60 +41,83 @@ class Sense:
 
     feminine: str | None = None
 
-    examples: list[str] = field(default_factory=list)
+    pronunciation: str | None = None
 
-    synonyms: list[str] = field(default_factory=list)
-
-    antonyms: list[str] = field(default_factory=list)
+    etymology: str | None = None
 
     source: str | None = None
+
+    senses: list[Sense] = field(default_factory=list)
 
     metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
-    def letters_count(self) -> int:
+    def letters_count(self):
+
         return len(self.text.replace(" ", ""))
 
     @property
-    def has_meaning(self) -> bool:
-        return bool(self.meaning)
+    def meanings_count(self):
+
+        return len(self.senses)
+
+    def add_sense(self, sense: Sense):
+
+        self.senses.append(sense)
 
     @property
-    def has_root(self) -> bool:
-        return bool(self.root)
+    def primary_meaning(self):
 
-    def to_dict(self) -> dict:
+        if self.senses:
+
+            return self.senses[0].meaning
+
+        return None
+
+    def to_dict(self):
+
         return {
+
             "text": self.text,
-            "word_type": self.word_type,
-            "meaning": self.meaning,
+
             "root": self.root,
+
             "plural": self.plural,
+
             "singular": self.singular,
+
             "masculine": self.masculine,
+
             "feminine": self.feminine,
-            "examples": self.examples,
-            "synonyms": self.synonyms,
-            "antonyms": self.antonyms,
-            "letters_count": self.letters_count,
+
+            "pronunciation": self.pronunciation,
+
+            "etymology": self.etymology,
+
             "source": self.source,
-            "metadata": self.metadata,
+
+            "letters_count": self.letters_count,
+
+            "senses": [
+
+                {
+
+                    "meaning": s.meaning,
+
+                    "word_type": s.word_type,
+
+                    "examples": s.examples,
+
+                    "synonyms": s.synonyms,
+
+                    "antonyms": s.antonyms,
+
+                    "notes": s.notes,
+
+                }
+
+                for s in self.senses
+
+            ],
+
         }
-
-    def __str__(self) -> str:
-
-        lines = [self.text]
-
-        if self.word_type:
-            lines.append(f"النوع: {self.word_type}")
-
-        if self.root:
-            lines.append(f"الجذر: {self.root}")
-
-        if self.meaning:
-            lines.append(f"المعنى: {self.meaning}")
-
-        if self.source:
-            lines.append(f"المصدر: {self.source}")
-
-        return "\n".join(lines)
