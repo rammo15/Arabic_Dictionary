@@ -1,34 +1,83 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Any
 
 
 @dataclass(slots=True)
 class Entry:
-    """
-    يمثل كلمة عربية داخل القاموس.
-    """
+    """يمثل مدخلاً معجميًا واحدًا."""
 
     text: str
-    word_type: Optional[str] = None
-    meaning: Optional[str] = None
-    root: Optional[str] = None
 
-    plural: Optional[str] = None
-    singular: Optional[str] = None
+    word_type: str | None = None
 
-    masculine: Optional[str] = None
-    feminine: Optional[str] = None
+    meaning: str | None = None
 
-    synonyms: List[str] = field(default_factory=list)
-    antonyms: List[str] = field(default_factory=list)
+    root: str | None = None
 
-    examples: List[str] = field(default_factory=list)
+    plural: str | None = None
 
-    source: Optional[str] = None
+    singular: str | None = None
+
+    masculine: str | None = None
+
+    feminine: str | None = None
+
+    examples: list[str] = field(default_factory=list)
+
+    synonyms: list[str] = field(default_factory=list)
+
+    antonyms: list[str] = field(default_factory=list)
+
+    source: str | None = None
+
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     @property
     def letters_count(self) -> int:
         return len(self.text.replace(" ", ""))
 
-    def to_dict(self):
-        return self.__dict__
+    @property
+    def has_meaning(self) -> bool:
+        return bool(self.meaning)
+
+    @property
+    def has_root(self) -> bool:
+        return bool(self.root)
+
+    def to_dict(self) -> dict:
+        return {
+            "text": self.text,
+            "word_type": self.word_type,
+            "meaning": self.meaning,
+            "root": self.root,
+            "plural": self.plural,
+            "singular": self.singular,
+            "masculine": self.masculine,
+            "feminine": self.feminine,
+            "examples": self.examples,
+            "synonyms": self.synonyms,
+            "antonyms": self.antonyms,
+            "letters_count": self.letters_count,
+            "source": self.source,
+            "metadata": self.metadata,
+        }
+
+    def __str__(self) -> str:
+
+        lines = [self.text]
+
+        if self.word_type:
+            lines.append(f"النوع: {self.word_type}")
+
+        if self.root:
+            lines.append(f"الجذر: {self.root}")
+
+        if self.meaning:
+            lines.append(f"المعنى: {self.meaning}")
+
+        if self.source:
+            lines.append(f"المصدر: {self.source}")
+
+        return "\n".join(lines)
