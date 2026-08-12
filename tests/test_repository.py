@@ -6,9 +6,7 @@ def test_save():
 
     repo = InMemoryRepository()
 
-    repo.save(
-        Entry(text="كتاب")
-    )
+    repo.save(Entry(text="كتاب"))
 
     assert repo.exists("كتاب")
 

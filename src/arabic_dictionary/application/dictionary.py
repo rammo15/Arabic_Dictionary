@@ -5,7 +5,6 @@ from .providers import Provider
 
 
 class Dictionary:
-
     def __init__(self):
 
         self.providers: list[Provider] = []
@@ -17,7 +16,6 @@ class Dictionary:
     def lookup(self, word: str) -> Entry | None:
 
         for provider in self.providers:
-
             result = provider.lookup(word)
 
             if result is not None:

@@ -1,5 +1,3 @@
-import sqlite3
-
 from arabic_dictionary.infrastructure.sqlite.database import Database
 
 
@@ -9,14 +7,9 @@ def test_database_initialization():
 
     db.initialize()
 
-    cursor = db.connection.execute(
-        "SELECT name FROM sqlite_master WHERE type='table';"
-    )
+    cursor = db.connection.execute("SELECT name FROM sqlite_master WHERE type='table';")
 
-    tables = {
-        row[0]
-        for row in cursor.fetchall()
-    }
+    tables = {row[0] for row in cursor.fetchall()}
 
     assert "entries" in tables
     assert "senses" in tables

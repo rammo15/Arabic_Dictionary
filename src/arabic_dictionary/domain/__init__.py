@@ -7,7 +7,7 @@ from .models import Entry, Sense
 
 __all__ = [
     "Entry",
-    "Sense",
     "RelationType",
+    "Sense",
     "WordType",
 ]

@@ -70,7 +70,6 @@ class Entry:
     def primary_meaning(self) -> str | None:
 
         if self.senses:
-
             return self.senses[0].meaning
 
         return None
@@ -78,47 +77,25 @@ class Entry:
     def to_dict(self) -> dict[str, Any]:
 
         return {
-
             "text": self.text,
-
             "root": self.root,
-
             "plural": self.plural,
-
             "singular": self.singular,
-
             "masculine": self.masculine,
-
             "feminine": self.feminine,
-
             "pronunciation": self.pronunciation,
-
             "etymology": self.etymology,
-
             "source": self.source,
-
             "letters_count": self.letters_count,
-
             "senses": [
-
                 {
-
                     "meaning": s.meaning,
-
                     "word_type": s.word_type,
-
                     "examples": s.examples,
-
                     "synonyms": s.synonyms,
-
                     "antonyms": s.antonyms,
-
                     "notes": s.notes,
-
                 }
-
                 for s in self.senses
-
             ],
-
         }

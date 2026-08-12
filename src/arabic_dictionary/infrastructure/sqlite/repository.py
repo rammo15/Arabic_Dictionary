@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from arabic_dictionary.domain import Entry
 from arabic_dictionary.repository import DictionaryRepository
 
 from .database import Database
@@ -26,8 +25,6 @@ class SQLiteRepository(DictionaryRepository):
         return cursor.fetchone() is not None
 
     def count(self) -> int:
-        cursor = self._database.connection.execute(
-            "SELECT COUNT(*) FROM entries"
-        )
+        cursor = self._database.connection.execute("SELECT COUNT(*) FROM entries")
 
         return int(cursor.fetchone()[0])

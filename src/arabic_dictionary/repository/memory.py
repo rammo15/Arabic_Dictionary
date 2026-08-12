@@ -12,7 +12,6 @@ from .base import DictionaryRepository
 
 
 class InMemoryRepository(DictionaryRepository):
-
     def __init__(self):
 
         self._entries: dict[str, Entry] = {}
@@ -35,11 +34,7 @@ class InMemoryRepository(DictionaryRepository):
 
     def search(self, text: str) -> list[Entry]:
 
-        return [
-            entry
-            for entry in self._entries.values()
-            if text in entry.text
-        ]
+        return [entry for entry in self._entries.values() if text in entry.text]
 
     def all(self):
 

@@ -8,8 +8,8 @@ from .memory import InMemoryRepository
 
 __all__ = [
     "DictionaryRepository",
-    "InMemoryRepository",
-    "RepositoryError",
     "EntryAlreadyExistsError",
     "EntryNotFoundError",
+    "InMemoryRepository",
+    "RepositoryError",
 ]

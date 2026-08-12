@@ -4,8 +4,7 @@ Repository interfaces.
 
 from __future__ import annotations
 
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from collections.abc import Iterable
 
 from arabic_dictionary.domain import Entry

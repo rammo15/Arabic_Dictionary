@@ -13,18 +13,12 @@ class Database:
 
         self.connection = sqlite3.connect(self.path)
 
-        self.connection.execute(
-            "PRAGMA foreign_keys = ON;"
-        )
+        self.connection.execute("PRAGMA foreign_keys = ON;")
 
     def initialize(self) -> None:
         """Create all database tables."""
 
-        schema = (
-            Path(__file__)
-            .with_name("schema.sql")
-            .read_text(encoding="utf-8")
-        )
+        schema = Path(__file__).with_name("schema.sql").read_text(encoding="utf-8")
 
         self.connection.executescript(schema)
 
