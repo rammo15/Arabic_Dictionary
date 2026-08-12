@@ -44,3 +44,8 @@ testpaths = ["tests"]
 [tool.mypy]
 python_version = "3.11"
 strict = true
+
+files = [
+    "src/arabic_dictionary/domain",
+    "tests",
+]
