@@ -6,6 +6,8 @@ Useful for tests.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+
 from arabic_dictionary.domain import Entry
 
 from .base import DictionaryRepository

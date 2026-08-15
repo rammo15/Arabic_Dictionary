@@ -3,6 +3,8 @@ from __future__ import annotations
 import requests
 from typing import Any
 
+from typing import Any
+
 
 class MediaWikiClient:
     """Simple client for the MediaWiki API."""
