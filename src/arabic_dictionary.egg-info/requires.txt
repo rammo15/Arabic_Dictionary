@@ -1,0 +1,13 @@
+requests>=2.32
+mwparserfromhell>=0.7
+openpyxl>=3.1
+rich>=13
+
+[dev]
+pytest
+pytest-cov
+black
+ruff
+mypy
+pre-commit
+types-requests

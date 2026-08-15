@@ -1,19 +1,18 @@
 from __future__ import annotations
 
 from arabic_dictionary.domain import Entry
+from arabic_dictionary.providers import Provider
 from arabic_dictionary.repository import DictionaryRepository
 
 
 class Dictionary:
     """High-level dictionary service."""
 
-    def __init__(self, repository: DictionaryRepository):
+    def __init__(self, repository: DictionaryRepository) -> None:
         self._repository = repository
+        self.providers: list[Provider] = []
 
-        self.providers: list[DictionaryRepository] = []
-
-    def add_provider(self, provider: DictionaryRepository):
-
+    def add_provider(self, provider: Provider) -> None:
         self.providers.append(provider)
 
     def lookup(self, word: str) -> Entry | None:
@@ -22,6 +21,5 @@ class Dictionary:
     def exists(self, word: str) -> bool:
         return self._repository.exists(word)
 
-    def provider_names(self):
-
+    def provider_names(self) -> list[str]:
         return [p.name for p in self.providers]

@@ -10,9 +10,11 @@ from arabic_dictionary.domain import Entry
 
 from .base import DictionaryRepository
 
+from collections.abc import Iterable
+
 
 class InMemoryRepository(DictionaryRepository):
-    def __init__(self):
+    def __init__(self) -> None:
 
         self._entries: dict[str, Entry] = {}
 
@@ -36,7 +38,7 @@ class InMemoryRepository(DictionaryRepository):
 
         return [entry for entry in self._entries.values() if text in entry.text]
 
-    def all(self):
+    def all(self) -> Iterable[Entry]:
 
         return self._entries.values()
 
@@ -44,6 +46,6 @@ class InMemoryRepository(DictionaryRepository):
 
         return len(self._entries)
 
-    def clear(self):
+    def clear(self) -> None:
 
         self._entries.clear()
