@@ -1,5 +1,4 @@
-from arabic_dictionary.domain.enums import RelationType
-from arabic_dictionary.domain.enums import WordType
+from arabic_dictionary.domain.enums import RelationType, WordType
 
 
 def test_word_type_enum():
