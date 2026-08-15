@@ -3,7 +3,7 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 from types import TracebackType
-from typing import Any
+from typing import Any, Self
 
 
 class Database:
@@ -45,7 +45,7 @@ class Database:
     def close(self) -> None:
         self._connection.close()
 
-    def __enter__(self) -> "Database":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(
