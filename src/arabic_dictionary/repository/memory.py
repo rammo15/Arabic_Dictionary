@@ -12,8 +12,6 @@ from arabic_dictionary.domain import Entry
 
 from .base import DictionaryRepository
 
-from collections.abc import Iterable
-
 
 class InMemoryRepository(DictionaryRepository):
     def __init__(self) -> None:
