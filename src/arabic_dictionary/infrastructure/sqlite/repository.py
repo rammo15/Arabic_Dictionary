@@ -4,6 +4,7 @@ from collections.abc import Iterable
 
 from arabic_dictionary.domain import Entry, Sense
 from arabic_dictionary.repository import DictionaryRepository
+from arabic_dictionary.utils.normalizer import normalize
 
 from .database import Database
 
@@ -31,7 +32,7 @@ class SQLiteRepository(DictionaryRepository):
             """,
             (
                 entry.text,
-                entry.text,
+                normalize(entry.text),
                 entry.root,
                 entry.pronunciation,
                 entry.etymology,
