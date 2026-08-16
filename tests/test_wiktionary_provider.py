@@ -28,6 +28,9 @@ _ARABIC_WIKITEXT = """
 ====مرادفات====
 * سِفْر
 * مُجَلَّد
+
+====أضداد====
+* مَقَالٌ
 """
 
 
@@ -83,6 +86,8 @@ def test_lookup_returns_entry() -> None:
     assert entry.senses[1].examples == ["قرات كتابا جديدا."]
     assert entry.senses[0].synonyms == ["سفر", "مجلد"]
     assert entry.senses[1].synonyms == ["سفر", "مجلد"]
+    assert entry.senses[0].antonyms == ["مقال"]
+    assert entry.senses[1].antonyms == ["مقال"]
 
 
 def test_lookup_returns_none_on_connection_error() -> None:

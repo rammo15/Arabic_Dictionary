@@ -45,6 +45,17 @@ def test_map_senses_with_synonyms() -> None:
     assert senses[0].synonyms == ["سفر", "مجلد"]
 
 
+def test_map_senses_with_antonyms() -> None:
+    mapper = WiktionaryMapper()
+
+    senses = mapper.map_senses(
+        senses=[ParsedSense(meaning="كبير")],
+        antonyms=["صَغِيرٌ", "ضَئِيلٌ"],
+    )
+
+    assert senses[0].antonyms == ["صغير", "ضئيل"]
+
+
 def test_map_sense_normalizes_text() -> None:
     mapper = WiktionaryMapper()
 
