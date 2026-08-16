@@ -58,3 +58,16 @@ def test_lookup_modern_page_sets_root() -> None:
 
     assert entry is not None
     assert entry.root == "كتب"
+
+
+def test_lookup_modern_page_sets_plural() -> None:
+    provider = WiktionaryProvider(
+        client=FakeModernClient(),
+        parser=WiktionaryParser(),
+        mapper=WiktionaryMapper(),
+    )
+
+    entry = provider.lookup("كتاب")
+
+    assert entry is not None
+    assert entry.plural == "كتب"

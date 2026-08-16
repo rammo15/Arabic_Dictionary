@@ -93,6 +93,20 @@ def test_extract_root_falls_back_to_legacy_template() -> None:
     assert root == "كتب"
 
 
+def test_extract_plural_from_preamble() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(_FIXTURE)
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+    meanings = parser.find_meanings_section(arabic)
+    assert meanings is not None
+
+    plural = parser.extract_plural_from_preamble(meanings)
+
+    assert plural == "كُتُب"
+
+
 def test_find_meanings_section_returns_none_when_absent() -> None:
     parser = WiktionaryParser()
 

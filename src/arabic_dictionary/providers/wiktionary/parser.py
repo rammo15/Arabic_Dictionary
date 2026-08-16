@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -88,6 +89,18 @@ class WiktionaryParser:
                 name = str(template.name).strip()
                 if name in _POS_TEMPLATE_NAMES:
                     return name
+        return None
+
+    def extract_plural_from_preamble(self, section: Wikicode) -> str | None:
+        for line in str(section).splitlines():
+            line = line.strip()
+            if line.startswith("#"):
+                break
+            stripped = mwparserfromhell.parse(line).strip_code().strip()
+            match = re.search(r"الجمع\s+(\S+)", stripped)
+            if match:
+                plural = match.group(1).rstrip(".,،;:")
+                return plural if plural else None
         return None
 
     def extract_pos_sections(self, section: Wikicode) -> list[Wikicode]:

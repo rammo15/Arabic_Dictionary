@@ -52,6 +52,9 @@ class WiktionaryProvider(Provider):
         if meanings is not None:
             raw_pos = self._parser.extract_inline_word_type(meanings)
             word_type = self._mapper.map_word_type(raw_pos) if raw_pos else None
+            raw_plural = self._parser.extract_plural_from_preamble(meanings)
+            if raw_plural is not None:
+                entry.plural = _normalize(raw_plural)
             raw_senses = self._parser.extract_senses(meanings)
             entry.senses.extend(self._mapper.map_senses(raw_senses, word_type))
         else:
