@@ -47,6 +47,46 @@ Texte
     assert "# كتاب" in str(section)
 
 
+def test_find_arabic_section_with_language_template() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+=={{اللغة|إنجليزية}}==
+Text
+
+
+=={{اللغة|عربية}}==
+===اسم===
+# كتاب
+
+
+=={{اللغة|فرنسية}}==
+Texte
+"""
+    )
+
+    section = parser.find_arabic_section(code)
+
+    assert section is not None
+    assert "===اسم===" in str(section)
+    assert "# كتاب" in str(section)
+
+
+def test_find_arabic_section_returns_none_for_non_arabic_template() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+=={{اللغة|إنجليزية}}==
+===Noun===
+# book
+"""
+    )
+
+    assert parser.find_arabic_section(code) is None
+
+
 def test_extract_pos_sections() -> None:
     parser = WiktionaryParser()
 
