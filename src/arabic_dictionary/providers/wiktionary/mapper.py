@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from arabic_dictionary.domain import Sense, WordType
+from arabic_dictionary.utils.normalizer import normalize as _normalize
 
 from .parser import ParsedSense
 
@@ -29,9 +30,9 @@ class WiktionaryMapper:
     ) -> list[Sense]:
         return [
             Sense(
-                meaning=s.meaning,
+                meaning=_normalize(s.meaning),
                 word_type=word_type,
-                examples=s.examples,
+                examples=[_normalize(e) for e in s.examples],
             )
             for s in senses
         ]
