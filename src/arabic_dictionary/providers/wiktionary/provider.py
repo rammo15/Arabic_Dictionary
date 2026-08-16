@@ -38,7 +38,9 @@ class WiktionaryProvider(Provider):
         entry = Entry(text=word, source=self.name)
 
         for section in self._parser.extract_pos_sections(arabic):
+            pos = self._parser.extract_part_of_speech(section)
+            word_type = self._mapper.map_word_type(pos)
             raw_senses = self._parser.extract_senses(section)
-            entry.senses.extend(self._mapper.map_senses(raw_senses))
+            entry.senses.extend(self._mapper.map_senses(raw_senses, word_type))
 
         return entry

@@ -1,6 +1,21 @@
 from __future__ import annotations
 
+from arabic_dictionary.domain import WordType
 from arabic_dictionary.providers.wiktionary.mapper import WiktionaryMapper
+
+
+def test_map_word_type_known() -> None:
+    mapper = WiktionaryMapper()
+
+    assert mapper.map_word_type("اسم") == WordType.NOUN
+    assert mapper.map_word_type("فعل") == WordType.VERB
+    assert mapper.map_word_type("صفة") == WordType.ADJECTIVE
+
+
+def test_map_word_type_unknown() -> None:
+    mapper = WiktionaryMapper()
+
+    assert mapper.map_word_type("شيء_غير_معروف") is None
 
 
 def test_map_senses() -> None:
