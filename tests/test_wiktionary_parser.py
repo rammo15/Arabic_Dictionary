@@ -202,6 +202,52 @@ def test_extract_part_of_speech() -> None:
     assert parser.extract_part_of_speech(pos_section) == "اسم"
 
 
+def test_extract_synonyms() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===اسم===
+# كتاب.
+
+====مرادفات====
+* سِفْر
+* مُجَلَّد
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    pos_section = parser.extract_pos_sections(arabic)[0]
+
+    assert parser.extract_synonyms(pos_section) == ["سِفْر", "مُجَلَّد"]
+
+
+def test_extract_synonyms_returns_empty_when_absent() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===اسم===
+# كتاب.
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    pos_section = parser.extract_pos_sections(arabic)[0]
+
+    assert parser.extract_synonyms(pos_section) == []
+
+
 def test_extract_wikitext() -> None:
     parser = WiktionaryParser()
 

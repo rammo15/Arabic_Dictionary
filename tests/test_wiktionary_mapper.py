@@ -34,6 +34,17 @@ def test_map_senses() -> None:
     assert senses[1].meaning == "مؤلف"
 
 
+def test_map_senses_with_synonyms() -> None:
+    mapper = WiktionaryMapper()
+
+    senses = mapper.map_senses(
+        senses=[ParsedSense(meaning="كتاب")],
+        synonyms=["سِفْر", "مُجَلَّد"],
+    )
+
+    assert senses[0].synonyms == ["سفر", "مجلد"]
+
+
 def test_map_sense_normalizes_text() -> None:
     mapper = WiktionaryMapper()
 

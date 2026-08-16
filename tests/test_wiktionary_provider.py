@@ -24,6 +24,10 @@ _ARABIC_WIKITEXT = """
 #: هذا كتابٌ مفيد.
 # مؤلف.
 #: قرأتُ كتابًا جديدًا.
+
+====مرادفات====
+* سِفْر
+* مُجَلَّد
 """
 
 
@@ -77,6 +81,8 @@ def test_lookup_returns_entry() -> None:
     assert entry.senses[1].meaning == "مؤلف."
     assert entry.senses[1].word_type == WordType.NOUN
     assert entry.senses[1].examples == ["قرات كتابا جديدا."]
+    assert entry.senses[0].synonyms == ["سفر", "مجلد"]
+    assert entry.senses[1].synonyms == ["سفر", "مجلد"]
 
 
 def test_lookup_returns_none_on_connection_error() -> None:

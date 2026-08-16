@@ -26,13 +26,18 @@ class WiktionaryMapper:
         return _WORD_TYPE_MAP.get(pos)
 
     def map_senses(
-        self, senses: list[ParsedSense], word_type: WordType | None = None
+        self,
+        senses: list[ParsedSense],
+        word_type: WordType | None = None,
+        synonyms: list[str] | None = None,
     ) -> list[Sense]:
+        normalized_synonyms = [_normalize(s) for s in synonyms] if synonyms else []
         return [
             Sense(
                 meaning=_normalize(s.meaning),
                 word_type=word_type,
                 examples=[_normalize(e) for e in s.examples],
+                synonyms=normalized_synonyms,
             )
             for s in senses
         ]
