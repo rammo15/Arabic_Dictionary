@@ -42,6 +42,12 @@ class WiktionaryParser:
             include_lead=False,
         )
 
+    def extract_part_of_speech(self, section: Wikicode) -> str:
+        headings = section.filter_headings()
+        if not headings:
+            return ""
+        return str(headings[0].title).strip()
+
     def extract_senses(self, section: Wikicode) -> list[str]:
         senses: list[str] = []
 

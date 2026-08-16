@@ -1,10 +1,26 @@
 from __future__ import annotations
 
-from arabic_dictionary.domain import Sense
+from arabic_dictionary.domain import Sense, WordType
+
+_WORD_TYPE_MAP: dict[str, WordType] = {
+    "اسم": WordType.NOUN,
+    "الاسم": WordType.NOUN,
+    "فعل": WordType.VERB,
+    "الفعل": WordType.VERB,
+    "صفة": WordType.ADJECTIVE,
+    "الصفة": WordType.ADJECTIVE,
+    "ظرف": WordType.ADVERB,
+    "حرف": WordType.PARTICLE,
+    "ضمير": WordType.PRONOUN,
+    "جملة": WordType.PHRASE,
+}
 
 
 class WiktionaryMapper:
     """Map parsed Wiktionary data into domain models."""
 
-    def map_senses(self, senses: list[str]) -> list[Sense]:
-        return [Sense(meaning=text) for text in senses]
+    def map_word_type(self, pos: str) -> WordType | None:
+        return _WORD_TYPE_MAP.get(pos)
+
+    def map_senses(self, senses: list[str], word_type: WordType | None = None) -> list[Sense]:
+        return [Sense(meaning=text, word_type=word_type) for text in senses]

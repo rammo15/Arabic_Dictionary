@@ -107,6 +107,27 @@ def test_extract_senses() -> None:
     ]
 
 
+def test_extract_part_of_speech() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===اسم===
+# كتاب
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    pos_section = parser.extract_pos_sections(arabic)[0]
+
+    assert parser.extract_part_of_speech(pos_section) == "اسم"
+
+
 def test_extract_wikitext() -> None:
     parser = WiktionaryParser()
 
