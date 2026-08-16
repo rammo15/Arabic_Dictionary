@@ -43,6 +43,18 @@ class WiktionaryParser:
 
         return None
 
+    def extract_root(self, section: Wikicode) -> str | None:
+        for template in section.filter_templates():
+            if str(template.name).strip() == "جذر":
+                letters = [
+                    str(p.value).strip()
+                    for p in template.params
+                    if str(p.name).strip().isdigit()
+                ]
+                root = "".join(letters)
+                return root if root else None
+        return None
+
     def extract_pos_sections(self, section: Wikicode) -> list[Wikicode]:
         return section.get_sections(
             levels=[3],

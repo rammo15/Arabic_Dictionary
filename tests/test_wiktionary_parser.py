@@ -140,6 +140,47 @@ def test_extract_senses_with_examples() -> None:
     )
 
 
+def test_extract_root() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+{{جذر|ك|ت|ب}}
+
+
+===اسم===
+# كتاب.
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    assert parser.extract_root(arabic) == "كتب"
+
+
+def test_extract_root_returns_none_when_absent() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===اسم===
+# كتاب.
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    assert parser.extract_root(arabic) is None
+
+
 def test_extract_part_of_speech() -> None:
     parser = WiktionaryParser()
 
