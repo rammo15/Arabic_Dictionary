@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from arabic_dictionary.domain import Entry
+from arabic_dictionary.utils.normalizer import normalize as _normalize
 
 from ..base import Provider
 from .client import MediaWikiClient
@@ -35,10 +36,11 @@ class WiktionaryProvider(Provider):
         if arabic is None:
             return None
 
+        raw_root = self._parser.extract_root(arabic)
         entry = Entry(
-            text=word,
+            text=_normalize(word),
             source=self.name,
-            root=self._parser.extract_root(arabic),
+            root=_normalize(raw_root) if raw_root is not None else None,
         )
 
         for section in self._parser.extract_pos_sections(arabic):

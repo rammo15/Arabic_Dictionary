@@ -24,11 +24,28 @@ def test_map_senses() -> None:
 
     senses = mapper.map_senses(
         [
-            ParsedSense(meaning="كتاب يُقرأ."),
-            ParsedSense(meaning="مؤلف."),
+            ParsedSense(meaning="كتاب"),
+            ParsedSense(meaning="مؤلف"),
         ]
     )
 
     assert len(senses) == 2
-    assert senses[0].meaning == "كتاب يُقرأ."
-    assert senses[1].meaning == "مؤلف."
+    assert senses[0].meaning == "كتاب"
+    assert senses[1].meaning == "مؤلف"
+
+
+def test_map_sense_normalizes_text() -> None:
+    mapper = WiktionaryMapper()
+
+    senses = mapper.map_senses(
+        senses=[
+            ParsedSense(
+                meaning="كِتَابٌ",
+                examples=["هٰذا كِتَابٌ"],
+            )
+        ],
+        word_type=WordType.NOUN,
+    )
+
+    assert senses[0].meaning == "كتاب"
+    assert senses[0].examples == ["هذا كتاب"]
