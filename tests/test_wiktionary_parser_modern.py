@@ -60,6 +60,39 @@ def test_extract_inline_word_type() -> None:
     assert pos == "اسم"
 
 
+def test_extract_root_from_root_section() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(_FIXTURE)
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    root = parser.extract_root(arabic)
+
+    assert root == "كتب"
+
+
+def test_extract_root_falls_back_to_legacy_template() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+{{جذر|ك|ت|ب}}
+
+===اسم===
+# كتاب.
+"""
+    )
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    root = parser.extract_root(arabic)
+
+    assert root == "كتب"
+
+
 def test_find_meanings_section_returns_none_when_absent() -> None:
     parser = WiktionaryParser()
 

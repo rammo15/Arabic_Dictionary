@@ -49,6 +49,17 @@ class WiktionaryParser:
         return None
 
     def extract_root(self, section: Wikicode) -> str | None:
+        # Modern format: ===الجذر=== with {{ك ت ب}}
+        for subsection in section.get_sections(levels=[3], include_lead=False):
+            headings = subsection.filter_headings()
+            if headings and str(headings[0].title).strip() == "الجذر":
+                for template in subsection.filter_templates():
+                    name = str(template.name).strip()
+                    parts = name.split()
+                    if len(parts) >= 2 and all(len(p) == 1 for p in parts):
+                        return "".join(parts)
+
+        # Legacy format: {{جذر|ك|ت|ب}}
         for template in section.filter_templates():
             if str(template.name).strip() == "جذر":
                 letters = [
@@ -58,6 +69,7 @@ class WiktionaryParser:
                 ]
                 root = "".join(letters)
                 return root if root else None
+
         return None
 
     def find_meanings_section(self, section: Wikicode) -> Wikicode | None:
