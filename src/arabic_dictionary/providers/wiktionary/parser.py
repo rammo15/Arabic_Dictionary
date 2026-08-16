@@ -1,1 +1,56 @@
+from __future__ import annotations
 
+from typing import Any
+
+import mwparserfromhell
+from mwparserfromhell.wikicode import Wikicode
+
+
+class WiktionaryParser:
+    """Parse Wiktionary wikitext."""
+
+    def extract_wikitext(self, data: dict[str, Any]) -> str:
+        return str(
+            data.get("parse", {})
+            .get("wikitext", {})
+            .get("*", "")
+        )
+
+    def parse(self, text: str) -> Wikicode:
+        return mwparserfromhell.parse(text)
+
+    def find_arabic_section(self, code: Wikicode) -> Wikicode | None:
+        sections = code.get_sections(
+            levels=[2],
+            include_lead=False,
+        )
+
+        for section in sections:
+            headings = section.filter_headings()
+
+            if not headings:
+                continue
+
+            if str(headings[0].title).strip() == "العربية":
+                return section
+
+        return None
+
+    def extract_pos_sections(self, section: Wikicode) -> list[Wikicode]:
+        return section.get_sections(
+            levels=[3],
+            include_lead=False,
+        )
+
+    def extract_senses(self, section: Wikicode) -> list[str]:
+        senses: list[str] = []
+
+        for line in str(section).splitlines():
+            line = line.strip()
+            if not line.startswith("# "):
+                continue
+            text = mwparserfromhell.parse(line[2:]).strip_code().strip()
+            if text:
+                senses.append(text)
+
+        return senses
