@@ -2,13 +2,14 @@ from __future__ import annotations
 
 import sqlite3
 from pathlib import Path
+from types import TracebackType
+from typing import Any, Self
 
 
 class Database:
     """SQLite database manager."""
 
-    def __init__(self, path: str | Path):
-
+    def __init__(self, path: str | Path) -> None:
         self.path = str(path)
 
         self._connection = sqlite3.connect(self.path)
@@ -29,24 +30,28 @@ class Database:
         )
 
         self._connection.executescript(schema)
-
         self._connection.commit()
 
     def execute(
         self,
         sql: str,
-        parameters: tuple = (),
-    ):
+        parameters: tuple[Any, ...] = (),
+    ) -> sqlite3.Cursor:
         return self._connection.execute(sql, parameters)
 
-    def executescript(self, script: str):
+    def executescript(self, script: str) -> sqlite3.Cursor:
         return self._connection.executescript(script)
 
     def close(self) -> None:
         self._connection.close()
 
-    def __enter__(self):
+    def __enter__(self) -> Self:
         return self
 
-    def __exit__(self, exc_type, exc, tb):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: TracebackType | None,
+    ) -> None:
         self.close()

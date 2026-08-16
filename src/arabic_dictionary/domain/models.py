@@ -58,7 +58,7 @@ class Entry:
         return len(self.text.replace(" ", ""))
 
     @property
-    def meanings_count(self):
+    def meanings_count(self) -> int:
 
         return len(self.senses)
 

@@ -9,6 +9,7 @@ src/arabic_dictionary/sqlite_provider.py
 src/arabic_dictionary.egg-info/PKG-INFO
 src/arabic_dictionary.egg-info/SOURCES.txt
 src/arabic_dictionary.egg-info/dependency_links.txt
+src/arabic_dictionary.egg-info/requires.txt
 src/arabic_dictionary.egg-info/top_level.txt
 src/arabic_dictionary/application/dictionary.py
 src/arabic_dictionary/application/exporter.py
@@ -40,10 +41,14 @@ src/arabic_dictionary/repository/sqlite.py
 src/arabic_dictionary/shared/config.py
 src/arabic_dictionary/shared/logger.py
 src/arabic_dictionary/shared/utils.py
+src/arabic_dictionary/utils/normalizer.py
 tests/test_database.py
 tests/test_enums.py
 tests/test_models.py
+tests/test_normalizer.py
+tests/test_provider_interface.py
 tests/test_repository.py
 tests/test_repository_interface.py
 tests/test_smoke.py
 tests/test_sqlite_repository.py
+tests/test_wiktionary_client.py
