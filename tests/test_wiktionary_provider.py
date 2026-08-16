@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from unittest.mock import patch
 
+import requests
+
 from arabic_dictionary.domain import WordType
 from arabic_dictionary.providers.wiktionary import (
     MediaWikiClient,
@@ -75,3 +77,36 @@ def test_lookup_returns_entry() -> None:
     assert entry.senses[1].meaning == "مؤلف."
     assert entry.senses[1].word_type == WordType.NOUN
     assert entry.senses[1].examples == ["قرات كتابا جديدا."]
+
+
+def test_lookup_returns_none_on_connection_error() -> None:
+    provider = WiktionaryProvider()
+
+    with patch.object(
+        provider._client,
+        "get_page",
+        side_effect=requests.exceptions.ConnectionError,
+    ):
+        assert provider.lookup("كتاب") is None
+
+
+def test_lookup_returns_none_on_timeout() -> None:
+    provider = WiktionaryProvider()
+
+    with patch.object(
+        provider._client,
+        "get_page",
+        side_effect=requests.exceptions.Timeout,
+    ):
+        assert provider.lookup("كتاب") is None
+
+
+def test_lookup_returns_none_on_http_error() -> None:
+    provider = WiktionaryProvider()
+
+    with patch.object(
+        provider._client,
+        "get_page",
+        side_effect=requests.exceptions.HTTPError,
+    ):
+        assert provider.lookup("كتاب") is None

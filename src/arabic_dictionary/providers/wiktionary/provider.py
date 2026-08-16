@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import requests
+
 from arabic_dictionary.domain import Entry
 from arabic_dictionary.utils.normalizer import normalize as _normalize
 
@@ -27,7 +29,10 @@ class WiktionaryProvider(Provider):
         return "wiktionary"
 
     def lookup(self, word: str) -> Entry | None:
-        data = self._client.get_page(word)
+        try:
+            data = self._client.get_page(word)
+        except requests.RequestException:
+            return None
 
         wikitext = self._parser.extract_wikitext(data)
         code = self._parser.parse(wikitext)
