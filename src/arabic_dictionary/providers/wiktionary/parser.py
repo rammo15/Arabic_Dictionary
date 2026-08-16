@@ -27,19 +27,22 @@ class WiktionaryParser:
         return mwparserfromhell.parse(text)
 
     def find_arabic_section(self, code: Wikicode) -> Wikicode | None:
-        sections = code.get_sections(
-            levels=[2],
-            include_lead=False,
-        )
-
-        for section in sections:
+        for section in code.get_sections(levels=[2], include_lead=False):
             headings = section.filter_headings()
 
             if not headings:
                 continue
 
-            if str(headings[0].title).strip() == "العربية":
+            title = headings[0].title
+
+            if str(title).strip() == "العربية":
                 return section
+
+            for template in title.filter_templates():
+                if str(template.name).strip() == "اللغة":
+                    params = list(template.params)
+                    if params and str(params[0].value).strip() == "عربية":
+                        return section
 
         return None
 
