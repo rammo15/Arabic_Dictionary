@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -49,6 +50,17 @@ class WiktionaryParser:
         return None
 
     def extract_root(self, section: Wikicode) -> str | None:
+        # Modern format: ===الجذر=== with {{ك ت ب}}
+        for subsection in section.get_sections(levels=[3], include_lead=False):
+            headings = subsection.filter_headings()
+            if headings and str(headings[0].title).strip() == "الجذر":
+                for template in subsection.filter_templates():
+                    name = str(template.name).strip()
+                    parts = name.split()
+                    if len(parts) >= 2 and all(len(p) == 1 for p in parts):
+                        return "".join(parts)
+
+        # Legacy format: {{جذر|ك|ت|ب}}
         for template in section.filter_templates():
             if str(template.name).strip() == "جذر":
                 letters = [
@@ -58,6 +70,7 @@ class WiktionaryParser:
                 ]
                 root = "".join(letters)
                 return root if root else None
+
         return None
 
     def find_meanings_section(self, section: Wikicode) -> Wikicode | None:
@@ -76,6 +89,18 @@ class WiktionaryParser:
                 name = str(template.name).strip()
                 if name in _POS_TEMPLATE_NAMES:
                     return name
+        return None
+
+    def extract_plural_from_preamble(self, section: Wikicode) -> str | None:
+        for line in str(section).splitlines():
+            line = line.strip()
+            if line.startswith("#"):
+                break
+            stripped = mwparserfromhell.parse(line).strip_code().strip()
+            match = re.search(r"الجمع\s+(\S+)", stripped)
+            if match:
+                plural = match.group(1).rstrip(".,،;:")
+                return plural if plural else None
         return None
 
     def extract_pos_sections(self, section: Wikicode) -> list[Wikicode]:

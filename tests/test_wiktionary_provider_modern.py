@@ -45,3 +45,29 @@ def test_lookup_modern_returns_noun_word_type() -> None:
     assert entry is not None
     assert len(entry.senses) >= 1
     assert entry.senses[0].word_type == WordType.NOUN
+
+
+def test_lookup_modern_page_sets_root() -> None:
+    provider = WiktionaryProvider(
+        client=FakeModernClient(),
+        parser=WiktionaryParser(),
+        mapper=WiktionaryMapper(),
+    )
+
+    entry = provider.lookup("كتاب")
+
+    assert entry is not None
+    assert entry.root == "كتب"
+
+
+def test_lookup_modern_page_sets_plural() -> None:
+    provider = WiktionaryProvider(
+        client=FakeModernClient(),
+        parser=WiktionaryParser(),
+        mapper=WiktionaryMapper(),
+    )
+
+    entry = provider.lookup("كتاب")
+
+    assert entry is not None
+    assert entry.plural == "كتب"
