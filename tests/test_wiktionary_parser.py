@@ -248,6 +248,52 @@ def test_extract_synonyms_returns_empty_when_absent() -> None:
     assert parser.extract_synonyms(pos_section) == []
 
 
+def test_extract_antonyms() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===صفة===
+# كبير.
+
+====أضداد====
+* صغير
+* ضئيل
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    pos_section = parser.extract_pos_sections(arabic)[0]
+
+    assert parser.extract_antonyms(pos_section) == ["صغير", "ضئيل"]
+
+
+def test_extract_antonyms_returns_empty_when_absent() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===صفة===
+# كبير.
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    pos_section = parser.extract_pos_sections(arabic)[0]
+
+    assert parser.extract_antonyms(pos_section) == []
+
+
 def test_extract_wikitext() -> None:
     parser = WiktionaryParser()
 

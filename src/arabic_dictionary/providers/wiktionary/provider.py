@@ -53,8 +53,9 @@ class WiktionaryProvider(Provider):
             word_type = self._mapper.map_word_type(pos)
             raw_senses = self._parser.extract_senses(section)
             raw_synonyms = self._parser.extract_synonyms(section)
+            raw_antonyms = self._parser.extract_antonyms(section)
             entry.senses.extend(
-                self._mapper.map_senses(raw_senses, word_type, raw_synonyms)
+                self._mapper.map_senses(raw_senses, word_type, raw_synonyms, raw_antonyms)
             )
 
         return entry

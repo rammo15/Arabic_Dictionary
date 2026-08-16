@@ -30,14 +30,17 @@ class WiktionaryMapper:
         senses: list[ParsedSense],
         word_type: WordType | None = None,
         synonyms: list[str] | None = None,
+        antonyms: list[str] | None = None,
     ) -> list[Sense]:
         normalized_synonyms = [_normalize(s) for s in synonyms] if synonyms else []
+        normalized_antonyms = [_normalize(a) for a in antonyms] if antonyms else []
         return [
             Sense(
                 meaning=_normalize(s.meaning),
                 word_type=word_type,
                 examples=[_normalize(e) for e in s.examples],
                 synonyms=normalized_synonyms,
+                antonyms=normalized_antonyms,
             )
             for s in senses
         ]
