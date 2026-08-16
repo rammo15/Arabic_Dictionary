@@ -294,6 +294,49 @@ def test_extract_antonyms_returns_empty_when_absent() -> None:
     assert parser.extract_antonyms(pos_section) == []
 
 
+def test_extract_plural() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===اسم===
+{{ج|كُتُب}}
+# كتاب يُقرأ.
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    pos_section = parser.extract_pos_sections(arabic)[0]
+
+    assert parser.extract_plural(pos_section) == "كُتُب"
+
+
+def test_extract_plural_returns_none_when_absent() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===اسم===
+# كتاب يُقرأ.
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    pos_section = parser.extract_pos_sections(arabic)[0]
+
+    assert parser.extract_plural(pos_section) is None
+
+
 def test_extract_wikitext() -> None:
     parser = WiktionaryParser()
 

@@ -51,6 +51,10 @@ class WiktionaryProvider(Provider):
         for section in self._parser.extract_pos_sections(arabic):
             pos = self._parser.extract_part_of_speech(section)
             word_type = self._mapper.map_word_type(pos)
+            if entry.plural is None:
+                raw_plural = self._parser.extract_plural(section)
+                if raw_plural is not None:
+                    entry.plural = _normalize(raw_plural)
             raw_senses = self._parser.extract_senses(section)
             raw_synonyms = self._parser.extract_synonyms(section)
             raw_antonyms = self._parser.extract_antonyms(section)

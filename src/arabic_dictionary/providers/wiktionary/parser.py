@@ -67,6 +67,17 @@ class WiktionaryParser:
             return ""
         return str(headings[0].title).strip()
 
+    def extract_plural(self, section: Wikicode) -> str | None:
+        for template in section.filter_templates():
+            if str(template.name).strip() == "ج":
+                params = [
+                    p for p in template.params if str(p.name).strip().isdigit()
+                ]
+                if params:
+                    value = str(params[0].value).strip()
+                    return value if value else None
+        return None
+
     def _extract_bullet_list(self, section: Wikicode, heading: str) -> list[str]:
         for subsection in section.get_sections(levels=[4], include_lead=False):
             headings = subsection.filter_headings()
