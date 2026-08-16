@@ -30,6 +30,9 @@ target-version = "py311"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "network: marks tests that require network access (run with --run-network)",
+]
 
 [tool.mypy]
 python_version = "3.11"
