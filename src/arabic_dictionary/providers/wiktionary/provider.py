@@ -35,7 +35,11 @@ class WiktionaryProvider(Provider):
         if arabic is None:
             return None
 
-        entry = Entry(text=word, source=self.name)
+        entry = Entry(
+            text=word,
+            source=self.name,
+            root=self._parser.extract_root(arabic),
+        )
 
         for section in self._parser.extract_pos_sections(arabic):
             pos = self._parser.extract_part_of_speech(section)
