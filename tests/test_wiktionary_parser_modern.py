@@ -107,6 +107,46 @@ def test_extract_plural_from_preamble() -> None:
     assert plural == "كُتُب"
 
 
+def test_extract_plural_from_preamble_plain_text() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+===المعاني===
+'''كتاب''' {{اسم}}. الجمع كُتُب.
+# معنى.
+"""
+    )
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+    meanings = parser.find_meanings_section(arabic)
+    assert meanings is not None
+
+    plural = parser.extract_plural_from_preamble(meanings)
+
+    assert plural == "كُتُب"
+
+
+def test_extract_plural_from_preamble_returns_none_when_absent() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+===المعاني===
+'''كتاب''' {{اسم}}.
+# معنى.
+"""
+    )
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+    meanings = parser.find_meanings_section(arabic)
+    assert meanings is not None
+
+    assert parser.extract_plural_from_preamble(meanings) is None
+
+
 def test_find_meanings_section_returns_none_when_absent() -> None:
     parser = WiktionaryParser()
 
