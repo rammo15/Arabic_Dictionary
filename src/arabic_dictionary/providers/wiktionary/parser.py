@@ -58,6 +58,13 @@ class WiktionaryParser:
                 return root if root else None
         return None
 
+    def find_meanings_section(self, section: Wikicode) -> Wikicode | None:
+        for subsection in section.get_sections(levels=[3], include_lead=False):
+            headings = subsection.filter_headings()
+            if headings and str(headings[0].title).strip() == "المعاني":
+                return subsection
+        return None
+
     def extract_pos_sections(self, section: Wikicode) -> list[Wikicode]:
         return section.get_sections(
             levels=[3],
