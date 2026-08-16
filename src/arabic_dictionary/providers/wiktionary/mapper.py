@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from arabic_dictionary.domain import Sense, WordType
 
+from .parser import ParsedSense
+
 _WORD_TYPE_MAP: dict[str, WordType] = {
     "اسم": WordType.NOUN,
     "الاسم": WordType.NOUN,
@@ -22,5 +24,14 @@ class WiktionaryMapper:
     def map_word_type(self, pos: str) -> WordType | None:
         return _WORD_TYPE_MAP.get(pos)
 
-    def map_senses(self, senses: list[str], word_type: WordType | None = None) -> list[Sense]:
-        return [Sense(meaning=text, word_type=word_type) for text in senses]
+    def map_senses(
+        self, senses: list[ParsedSense], word_type: WordType | None = None
+    ) -> list[Sense]:
+        return [
+            Sense(
+                meaning=s.meaning,
+                word_type=word_type,
+                examples=s.examples,
+            )
+            for s in senses
+        ]

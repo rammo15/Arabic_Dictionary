@@ -16,7 +16,9 @@ _ARABIC_WIKITEXT = """
 
 ===اسم===
 # كتاب يُقرأ.
+#: هذا كتابٌ مفيد.
 # مؤلف.
+#: قرأتُ كتابًا جديدًا.
 """
 
 
@@ -65,5 +67,7 @@ def test_lookup_returns_entry() -> None:
     assert len(entry.senses) == 2
     assert entry.senses[0].meaning == "كتاب يُقرأ."
     assert entry.senses[0].word_type == WordType.NOUN
+    assert entry.senses[0].examples == ["هذا كتابٌ مفيد."]
     assert entry.senses[1].meaning == "مؤلف."
     assert entry.senses[1].word_type == WordType.NOUN
+    assert entry.senses[1].examples == ["قرأتُ كتابًا جديدًا."]

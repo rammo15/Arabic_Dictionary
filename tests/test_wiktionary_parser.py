@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import mwparserfromhell
 
-from arabic_dictionary.providers.wiktionary.parser import WiktionaryParser
+from arabic_dictionary.providers.wiktionary.parser import ParsedSense, WiktionaryParser
 
 
 def test_parse_empty_text() -> None:
@@ -101,10 +101,43 @@ def test_extract_senses() -> None:
 
     senses = parser.extract_senses(pos)
 
-    assert senses == [
-        "كتاب يُقرأ.",
-        "مؤلف.",
-    ]
+    assert len(senses) == 2
+    assert senses[0].meaning == "كتاب يُقرأ."
+    assert senses[1].meaning == "مؤلف."
+
+
+def test_extract_senses_with_examples() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+
+===اسم===
+# كتاب يُقرأ.
+#: هذا كتابٌ مفيد.
+# مؤلف.
+#: قرأتُ كتابًا جديدًا.
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+
+    pos = parser.extract_pos_sections(arabic)[0]
+    senses = parser.extract_senses(pos)
+
+    assert len(senses) == 2
+
+    assert senses[0] == ParsedSense(
+        meaning="كتاب يُقرأ.",
+        examples=["هذا كتابٌ مفيد."],
+    )
+    assert senses[1] == ParsedSense(
+        meaning="مؤلف.",
+        examples=["قرأتُ كتابًا جديدًا."],
+    )
 
 
 def test_extract_part_of_speech() -> None:
