@@ -46,6 +46,20 @@ def test_extract_senses_from_meanings_section() -> None:
     assert senses[1].examples != []
 
 
+def test_extract_inline_word_type() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(_FIXTURE)
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+    meanings = parser.find_meanings_section(arabic)
+    assert meanings is not None
+
+    pos = parser.extract_inline_word_type(meanings)
+
+    assert pos == "اسم"
+
+
 def test_find_meanings_section_returns_none_when_absent() -> None:
     parser = WiktionaryParser()
 

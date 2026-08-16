@@ -48,18 +48,25 @@ class WiktionaryProvider(Provider):
             root=_normalize(raw_root) if raw_root is not None else None,
         )
 
-        for section in self._parser.extract_pos_sections(arabic):
-            pos = self._parser.extract_part_of_speech(section)
-            word_type = self._mapper.map_word_type(pos)
-            if entry.plural is None:
-                raw_plural = self._parser.extract_plural(section)
-                if raw_plural is not None:
-                    entry.plural = _normalize(raw_plural)
-            raw_senses = self._parser.extract_senses(section)
-            raw_synonyms = self._parser.extract_synonyms(section)
-            raw_antonyms = self._parser.extract_antonyms(section)
-            entry.senses.extend(
-                self._mapper.map_senses(raw_senses, word_type, raw_synonyms, raw_antonyms)
-            )
+        meanings = self._parser.find_meanings_section(arabic)
+        if meanings is not None:
+            raw_pos = self._parser.extract_inline_word_type(meanings)
+            word_type = self._mapper.map_word_type(raw_pos) if raw_pos else None
+            raw_senses = self._parser.extract_senses(meanings)
+            entry.senses.extend(self._mapper.map_senses(raw_senses, word_type))
+        else:
+            for section in self._parser.extract_pos_sections(arabic):
+                pos = self._parser.extract_part_of_speech(section)
+                word_type = self._mapper.map_word_type(pos)
+                if entry.plural is None:
+                    raw_plural = self._parser.extract_plural(section)
+                    if raw_plural is not None:
+                        entry.plural = _normalize(raw_plural)
+                raw_senses = self._parser.extract_senses(section)
+                raw_synonyms = self._parser.extract_synonyms(section)
+                raw_antonyms = self._parser.extract_antonyms(section)
+                entry.senses.extend(
+                    self._mapper.map_senses(raw_senses, word_type, raw_synonyms, raw_antonyms)
+                )
 
         return entry
