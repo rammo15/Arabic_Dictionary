@@ -1,9 +1,16 @@
 from __future__ import annotations
 
+from dataclasses import dataclass, field
 from typing import Any
 
 import mwparserfromhell
 from mwparserfromhell.wikicode import Wikicode
+
+
+@dataclass(slots=True)
+class ParsedSense:
+    meaning: str
+    examples: list[str] = field(default_factory=list)
 
 
 class WiktionaryParser:
@@ -48,15 +55,18 @@ class WiktionaryParser:
             return ""
         return str(headings[0].title).strip()
 
-    def extract_senses(self, section: Wikicode) -> list[str]:
-        senses: list[str] = []
+    def extract_senses(self, section: Wikicode) -> list[ParsedSense]:
+        senses: list[ParsedSense] = []
 
         for line in str(section).splitlines():
             line = line.strip()
-            if not line.startswith("# "):
-                continue
-            text = mwparserfromhell.parse(line[2:]).strip_code().strip()
-            if text:
-                senses.append(text)
+            if line.startswith("# "):
+                text = mwparserfromhell.parse(line[2:]).strip_code().strip()
+                if text:
+                    senses.append(ParsedSense(meaning=text))
+            elif line.startswith("#: ") and senses:
+                example = mwparserfromhell.parse(line[3:]).strip_code().strip()
+                if example:
+                    senses[-1].examples.append(example)
 
         return senses

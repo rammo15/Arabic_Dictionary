@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from arabic_dictionary.domain import WordType
 from arabic_dictionary.providers.wiktionary.mapper import WiktionaryMapper
+from arabic_dictionary.providers.wiktionary.parser import ParsedSense
 
 
 def test_map_word_type_known() -> None:
@@ -23,8 +24,8 @@ def test_map_senses() -> None:
 
     senses = mapper.map_senses(
         [
-            "كتاب يُقرأ.",
-            "مؤلف.",
+            ParsedSense(meaning="كتاب يُقرأ."),
+            ParsedSense(meaning="مؤلف."),
         ]
     )
 
