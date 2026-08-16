@@ -67,6 +67,20 @@ class WiktionaryParser:
             return ""
         return str(headings[0].title).strip()
 
+    def extract_synonyms(self, section: Wikicode) -> list[str]:
+        for subsection in section.get_sections(levels=[4], include_lead=False):
+            headings = subsection.filter_headings()
+            if headings and str(headings[0].title).strip() == "مرادفات":
+                synonyms = []
+                for line in str(subsection).splitlines():
+                    line = line.strip()
+                    if line.startswith("* "):
+                        text = mwparserfromhell.parse(line[2:]).strip_code().strip()
+                        if text:
+                            synonyms.append(text)
+                return synonyms
+        return []
+
     def extract_senses(self, section: Wikicode) -> list[ParsedSense]:
         senses: list[ParsedSense] = []
 
