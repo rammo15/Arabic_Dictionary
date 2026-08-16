@@ -6,6 +6,8 @@ from typing import Any
 import mwparserfromhell
 from mwparserfromhell.wikicode import Wikicode
 
+_POS_TEMPLATE_NAMES = frozenset({"اسم", "فعل", "صفة", "ظرف", "حرف", "ضمير", "جملة"})
+
 
 @dataclass(slots=True)
 class ParsedSense:
@@ -63,6 +65,17 @@ class WiktionaryParser:
             headings = subsection.filter_headings()
             if headings and str(headings[0].title).strip() == "المعاني":
                 return subsection
+        return None
+
+    def extract_inline_word_type(self, section: Wikicode) -> str | None:
+        for line in str(section).splitlines():
+            line = line.strip()
+            if line.startswith("#"):
+                break
+            for template in mwparserfromhell.parse(line).filter_templates():
+                name = str(template.name).strip()
+                if name in _POS_TEMPLATE_NAMES:
+                    return name
         return None
 
     def extract_pos_sections(self, section: Wikicode) -> list[Wikicode]:
