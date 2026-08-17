@@ -6,20 +6,30 @@ from arabic_dictionary.repository import DictionaryRepository
 
 
 class Dictionary:
-    """High-level dictionary service."""
+    """High-level dictionary service.
 
-    def __init__(self, repository: DictionaryRepository) -> None:
+    Looks up words in the repository first (cache-aside). On a miss,
+    delegates to the provider, persists the result, and returns it.
+    """
+
+    def __init__(
+        self,
+        repository: DictionaryRepository,
+        provider: Provider | None = None,
+    ) -> None:
         self._repository = repository
-        self.providers: list[Provider] = []
-
-    def add_provider(self, provider: Provider) -> None:
-        self.providers.append(provider)
+        self._provider = provider
 
     def lookup(self, word: str) -> Entry | None:
-        return self._repository.get(word)
+        entry = self._repository.get(word)
+        if entry is not None:
+            return entry
+        if self._provider is None:
+            return None
+        entry = self._provider.lookup(word)
+        if entry is not None:
+            self._repository.save(entry)
+        return entry
 
     def exists(self, word: str) -> bool:
         return self._repository.exists(word)
-
-    def provider_names(self) -> list[str]:
-        return [p.name for p in self.providers]
