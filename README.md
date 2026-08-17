@@ -126,6 +126,37 @@ d = Dictionary(
 entry = d.lookup("كتاب")
 ```
 
+## Examples
+
+Runnable examples are available in the [`examples/`](examples/) directory:
+
+| File | Description |
+|------|-------------|
+| [`basic_lookup.py`](examples/basic_lookup.py) | Online lookup via Wiktionary, prints all fields |
+| [`static_provider.py`](examples/static_provider.py) | Offline lookup from a local JSON file |
+| [`composite_provider.py`](examples/composite_provider.py) | Local overrides with Wiktionary fallback |
+
+## Project Status
+
+**Current version: 0.2.0** — the core architecture is stable and the library is usable.
+
+### What is supported
+
+- Arabic Wiktionary lookup (both legacy and modern page formats)
+- Offline lookup from a local JSON file (`StaticProvider`)
+- Composing multiple providers with fallback (`CompositeProvider`)
+- Automatic caching in-memory or SQLite
+- Extracted fields: root, plural, word type, meanings, examples, synonyms, antonyms
+- Arabic text normalization (diacritics, alef variants, tā' marbūṭa, yā', taṭwīl)
+
+### What is not yet supported
+
+- Pronunciation / transliteration
+- Verb conjugation tables
+- Word frequency or corpus data
+- Search across the full repository (partial match, root search)
+- Streaming / batch import of large word lists
+
 ## Architecture
 
 ```
@@ -146,11 +177,22 @@ independent — advanced users can inject any combination without touching `Dict
 
 ### Domain model
 
-| Class      | Description                                      |
-|------------|--------------------------------------------------|
-| `Entry`    | A single dictionary word with all its metadata   |
-| `Sense`    | One meaning of a word                            |
-| `WordType` | Grammatical category (`NOUN`, `VERB`, …)         |
+```
+Entry
+├── text        str               the word as stored
+├── root        str | None        trilateral/quadrilateral root
+├── plural      str | None        broken plural form
+├── source      str | None        provider name that produced this entry
+└── senses      list[Sense]
+      ├── meaning    str           definition text
+      ├── word_type  WordType | None
+      ├── examples   list[str]
+      ├── synonyms   list[str]
+      └── antonyms   list[str]
+```
+
+`WordType` values: `NOUN`, `VERB`, `ADJECTIVE`, `ADVERB`, `PARTICLE`, `PRONOUN`,
+`PREPOSITION`, `CONJUNCTION`, `INTERJECTION`, `PHRASE`.
 
 ### Providers
 
