@@ -392,3 +392,42 @@ def test_extract_wikitext() -> None:
         parser.extract_wikitext(data)
         == "==العربية==\n===اسم===\n# كتاب"
     )
+
+
+def test_extract_root_from_conjugation_box() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+=== فعل ===
+'''قَلَّمَ'''
+# قطع جزءا من شيء.
+{{تصريف|جذر=قلم|وزن=فعّل}}
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+    assert parser.extract_root(arabic) == "قلم"
+
+
+def test_extract_root_from_same_root_section() -> None:
+    parser = WiktionaryParser()
+
+    code = parser.parse(
+        """
+==العربية==
+
+=== المعاني ===
+# نبات قائم على ساق صلبة.
+
+=== من الجذر نفسه ===
+{{ش ج ر}}
+"""
+    )
+
+    arabic = parser.find_arabic_section(code)
+    assert arabic is not None
+    assert parser.extract_root(arabic) == "شجر"

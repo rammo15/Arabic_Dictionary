@@ -70,6 +70,21 @@ class WiktionaryParser:
                 root = "".join(letters)
                 return root if root else None
 
+        # Verb conjugation box: {{تصريف|جذر=قلم|وزن=فعّل}}
+        for template in section.filter_templates():
+            if str(template.name).strip() == "تصريف":
+                for param in template.params:
+                    if str(param.name).strip() == "جذر":
+                        root = str(param.value).strip()
+                        return root if root else None
+
+        # {{ش ج ر}} anywhere in section (e.g. ===من الجذر نفسه===)
+        for template in section.filter_templates():
+            name = str(template.name).strip()
+            parts = name.split()
+            if len(parts) >= 2 and all(len(p) == 1 for p in parts):
+                return "".join(parts)
+
         return None
 
     def is_disambiguation_page(self, code: Wikicode) -> bool:
