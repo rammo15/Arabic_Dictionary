@@ -123,3 +123,29 @@ def test_lookup_returns_none_on_http_error() -> None:
         side_effect=requests.exceptions.HTTPError,
     ):
         assert provider.lookup("كتاب") is None
+
+
+def test_lookup_strips_diacritics_before_api_call() -> None:
+    provider = WiktionaryProvider()
+
+    with patch.object(
+        provider._client,
+        "get_page",
+        return_value={"parse": {"wikitext": {"*": _ARABIC_WIKITEXT}}},
+    ) as mock_get:
+        provider.lookup("كِتَابٌ")
+
+    mock_get.assert_called_once_with("كتاب")
+
+
+def test_lookup_strips_tatweel_before_api_call() -> None:
+    provider = WiktionaryProvider()
+
+    with patch.object(
+        provider._client,
+        "get_page",
+        return_value={"parse": {"wikitext": {"*": _ARABIC_WIKITEXT}}},
+    ) as mock_get:
+        provider.lookup("كـتـاب")
+
+    mock_get.assert_called_once_with("كتاب")
