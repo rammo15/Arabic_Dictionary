@@ -72,6 +72,29 @@ class WiktionaryParser:
 
         return None
 
+    def is_disambiguation_page(self, code: Wikicode) -> bool:
+        for template in code.filter_templates():
+            if str(template.name).strip() == "توضيح":
+                return True
+        return False
+
+    _NAMESPACE_PREFIXES = frozenset({"تصنيف", "ملف", "صورة", "وب", "مستخدم"})
+
+    def extract_disambiguation_links(self, code: Wikicode) -> list[str]:
+        seen: set[str] = set()
+        links: list[str] = []
+        for wikilink in code.filter_wikilinks():
+            target = str(wikilink.title).strip()
+            if not target:
+                continue
+            prefix = target.split(":")[0]
+            if prefix in self._NAMESPACE_PREFIXES:
+                continue
+            if target not in seen:
+                seen.add(target)
+                links.append(target)
+        return links
+
     def find_meanings_section(self, section: Wikicode) -> Wikicode | None:
         for subsection in section.get_sections(levels=[3], include_lead=False):
             headings = subsection.filter_headings()
