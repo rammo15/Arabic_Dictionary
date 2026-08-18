@@ -4,6 +4,7 @@ import requests
 
 from arabic_dictionary.domain import Entry
 from arabic_dictionary.utils.normalizer import normalize as _normalize
+from arabic_dictionary.utils.normalizer import strip_diacritics as _strip
 
 from ..base import Provider
 from .client import MediaWikiClient
@@ -30,7 +31,7 @@ class WiktionaryProvider(Provider):
 
     def lookup(self, word: str) -> Entry | None:
         try:
-            data = self._client.get_page(word)
+            data = self._client.get_page(_strip(word))
         except requests.RequestException:
             return None
 

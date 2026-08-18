@@ -7,6 +7,18 @@ _DIACRITICS = re.compile(
 )
 
 
+def strip_diacritics(text: str) -> str:
+    """Remove diacritics and tatweel only, preserving all letter forms.
+
+    Use this before an API lookup so that قَلَمٌ → قلم and كـتاب → كتاب,
+    without altering letters like ة, أ, ى that carry meaning.
+    """
+    text = text.strip()
+    text = text.replace("ـ", "")
+    text = _DIACRITICS.sub("", text)
+    return text
+
+
 def normalize(text: str) -> str:
     """Normalize Arabic text for indexing and searching."""
 
