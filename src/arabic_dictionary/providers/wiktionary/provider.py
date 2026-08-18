@@ -38,7 +38,30 @@ class WiktionaryProvider(Provider):
         wikitext = self._parser.extract_wikitext(data)
         code = self._parser.parse(wikitext)
 
-        arabic = self._parser.find_arabic_section(code)
+        if self._parser.is_disambiguation_page(code):
+            return self._resolve_disambiguation(
+                self._parser.extract_disambiguation_links(code), word
+            )
+
+        return self._build_entry(code, word)
+
+    def _resolve_disambiguation(self, links: list[str], word: str) -> Entry | None:
+        for link in links:
+            try:
+                data = self._client.get_page(link)
+            except requests.RequestException:
+                continue
+            wikitext = self._parser.extract_wikitext(data)
+            code = self._parser.parse(wikitext)
+            if self._parser.is_disambiguation_page(code):
+                continue
+            entry = self._build_entry(code, word)
+            if entry is not None:
+                return entry
+        return None
+
+    def _build_entry(self, code: object, word: str) -> Entry | None:
+        arabic = self._parser.find_arabic_section(code)  # type: ignore[arg-type]
         if arabic is None:
             return None
 
@@ -73,4 +96,4 @@ class WiktionaryProvider(Provider):
                     self._mapper.map_senses(raw_senses, word_type, raw_synonyms, raw_antonyms)
                 )
 
-        return entry
+        return entry if entry.senses else None
